@@ -1,7 +1,7 @@
 <?php
 namespace App\Transformers;
 
-use App\Air;
+use App\Models\Air;
 use League\Fractal\TransformerAbstract;
 
 class AirTransformer extends TransformerAbstract

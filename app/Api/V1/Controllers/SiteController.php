@@ -4,32 +4,33 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\Air;
+use App\Models\Site;
 use Illuminate\Http\Request;
 
-use App\Transformers\AirTransformer;
+use App\Transformers\SiteTransformer;
 
 /**
- * Air resource representation.
+ * Site resource representation.
  *
- * @Resource("Airs", uri="/airs")
+ * @Resource("Site", uri="/sites")
  */
-class AirController extends Controller
+class SiteController extends Controller
 {
     /**
-     * Show all airs
+     * Show all sites
      *
-     * Get a JSON representation of all the airs.
+     * Get a JSON representation of all the sites.
      *
      * @Get("/")
      * @Versions({"v1"})
+     * @Request(headers={"Accept": "application/vnd.orsatmax.v1+json", "x-show-site-fields": "formal_name,short_name"})
      */
     public function index()
     {
-        return $this->response->collection(
-          Air::all(),
-          new AirTransformer
-        );
+      return $this->response->collection(
+        Site::orderBy('instrument_name', 'asc')->get(),
+        new SiteTransformer
+      );
     }
 
     /**
@@ -56,10 +57,10 @@ class AirController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Air  $air
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function show(Air $air)
+    public function show(Site $site)
     {
         //
     }
@@ -67,10 +68,10 @@ class AirController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Air  $air
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function edit(Air $air)
+    public function edit(Site $site)
     {
         //
     }
@@ -79,10 +80,10 @@ class AirController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Air  $air
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Air $air)
+    public function update(Request $request, Site $site)
     {
         //
     }
@@ -90,10 +91,10 @@ class AirController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Air  $air
+     * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Air $air)
+    public function destroy(Site $site)
     {
         //
     }

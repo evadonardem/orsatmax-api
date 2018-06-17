@@ -34,17 +34,22 @@ $api->version('v1', function($api) {
 
   // authentication
   $api->post('authenticate', 'App\Api\V1\Controllers\AuthenticateController@authenticate');
-
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function($api) {
+  // refresh token
+  $api->get('refresh', 'App\Api\V1\Controllers\AuthenticateController@token');
 
   // authenticated user
   $api->get('user', function() {
     $user = app('Dingo\Api\Auth\Auth')->user();
     return $user;
   });
-
+  
   // airs list end-point
   $api->get('/airs', 'App\Api\V1\Controllers\AirController@index');
+
+  // sites list end-point
+  $api->get('/sites', 'App\Api\V1\Controllers\SiteController@index');
+
 });
