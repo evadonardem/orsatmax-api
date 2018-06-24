@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Api\V1\Controllers;
-
 use App\Http\Controllers\Controller;
-
 use App\Models\Site;
+use App\Models\Air;
 use Illuminate\Http\Request;
-
 use App\Transformers\SiteTransformer;
+use App\Transformers\TXOTransformer;
 
 /**
  * Site resource representation.
@@ -34,68 +33,68 @@ class SiteController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show site dumps
      *
-     * @return \Illuminate\Http\Response
+     * Get a JSON representation of all the site dumps.
+     *
+     * @Post("/{site_id}/dumps")
+     * @Versions({"v1"})
+     * @Request({"standard": "E|C|Q|B|S, "sample_date": "YYYY-MM-DD", "component_names": "" }, headers={"Accept": "application/vnd.orsatmax.v1+json"})
      */
-    public function create()
-    {
-        //
+    public function siteDumps(Request $request, $id) {
+        $standard = $request->input('standard');
+        $sample_date = $request->input('sample_date');
+        $component_names = $request->input('component_names');
+
+        $airIDs = [];
+        if(
+          !is_null($component_names) ||
+          !empty($component_names)
+        ) {
+          $airs = Air::whereIn('component_name', $component_names)
+            ->orWhereIn('alias', $component_names)
+            ->get();
+          foreach($airs as $air) {
+            $airIDs[] = $air->id;
+          }
+        }
+
+        $site = Site::with(['dumps' => function($query) use ($standard, $sample_date, $airIDs) {
+            $query->where('sample_date', '>=', $sample_date);
+            $query->where('sample_date', '<=', $sample_date);
+            $query->whereRaw("SUBSTRING(LOWER(filename),-9,1) = '".$standard."'");
+            if(!empty($airIDs)) {
+              $query->with(['componentValues' => function($query) use ($airIDs) {
+                $query->whereHas('air', function($query) use ($airIDs) {
+                  $query->whereIn('id', $airIDs);
+                });
+              }]);
+            }
+        }])
+        ->where('id', '=', $id)
+        ->first();
+        $dumps = $site->dumps;
+        $dumps = $dumps->filter(function(&$txo) {
+            $componentValues = $txo->componentValues;
+            $componentValues = $componentValues->filter(function($componentValue) {
+                return $componentValue->air ? true : false;
+            });
+            $txo->componentValues = $componentValues;
+            return true;
+        });
+
+        if(
+          !is_null($component_names) ||
+          !empty($component_names)
+        ) {
+          $dumps = $dumps->filter(function($txo) {
+            return $txo->componentValues->count() > 0;
+          });
+        }
+        return $this->response->collection(
+          $dumps,
+          new TXOTransformer
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Site $site)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Site $site)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Site $site)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Site $site)
-    {
-        //
-    }
 }

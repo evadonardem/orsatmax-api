@@ -45,11 +45,14 @@ $api->version('v1', ['middleware' => 'api.auth'], function($api) {
     $user = app('Dingo\Api\Auth\Auth')->user();
     return $user;
   });
-  
+
   // airs list end-point
   $api->get('/airs', 'App\Api\V1\Controllers\AirController@index');
 
   // sites list end-point
   $api->get('/sites', 'App\Api\V1\Controllers\SiteController@index');
+
+  // site dumps end-point
+  $api->post('/sites/{site_id}/dumps', 'App\Api\V1\Controllers\SiteController@siteDumps');
 
 });
