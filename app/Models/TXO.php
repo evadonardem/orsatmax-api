@@ -18,4 +18,8 @@ class TXO extends Model
     	return $this->hasMany(ComponentValue::class, 'txo_dump_id', 'id');
     }
 
+    public function componentsTotal() {
+			return $this->hasOne(ComponentsTotal::class, 'txo_dump_id', 'id');
+		}
+
 }

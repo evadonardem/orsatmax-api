@@ -55,4 +55,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function($api) {
   // site dumps end-point
   $api->post('/sites/{site_id}/dumps', 'App\Api\V1\Controllers\SiteController@siteDumps');
 
+  // charts end-point
+  $api->post('/charts/ambient', 'App\Api\V1\Controllers\ChartController@ambient');
+
 });

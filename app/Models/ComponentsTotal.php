@@ -11,6 +11,6 @@ class ComponentsTotal extends Model
     public $timestamps = false;
 
     public function txo() {
-    	return $this->belongsTo('TXO', 'txo_dump_id', 'id');
+    	return $this->belongsTo(TXO::class, 'txo_dump_id', 'id');
     }
 }
