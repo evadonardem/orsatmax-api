@@ -65,9 +65,8 @@ class ChartController extends Controller
   				$data['xData'][] = $from->format('m/d/Y') . ' ' . ($i<10 ? '0' : '') . $i . ':00';
   			}
 
-  			foreach($site_ids as $site_id) {
-  				$site = \App\Models\Site::find($site_id);
-
+  			foreach($site_ids as $key => $site_id) {
+  				
           $txoDumps = $this->api->with(
               [
                 'standard' => 'S',
@@ -126,7 +125,7 @@ class ChartController extends Controller
 
               $index = 0;
               foreach($data['datasets'] as $dataset) {
-  							if( strcasecmp($dataset['name'], $component_name . ' (' . $site->instrument_name . ')')  == 0 ) {
+  							if( strcasecmp($dataset['name'], $component_name . ' (' . $site_names[$key] . ')')  == 0 ) {
   								break;
   							}
                 $index++;
@@ -215,7 +214,7 @@ class ChartController extends Controller
 						$index = 0;
 						$found = false;
 						foreach($data['datasets'] as $dataset) {
-							if($dataset['name'] == 'TNMHC (' . $site->instrument_name . ')') {
+							if($dataset['name'] == 'TNMHC (' . $site_names[$key] . ')') {
 								$found = true;
 								break;
 							}
@@ -300,7 +299,7 @@ class ChartController extends Controller
   					$index = 0;
   					$found = false;
   					foreach($data['datasets'] as $dataset) {
-  						if($dataset['name'] == 'TNMTC (' . $site->instrument_name . ')') {
+  						if($dataset['name'] == 'TNMTC (' . $site_names[$key] . ')') {
   							$found = true;
   							break;
   						}
