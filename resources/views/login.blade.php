@@ -32,7 +32,7 @@
     <script type="text/javascript">
       $(function() {
         $('#login').click(function() {
-          axios.post('http://localhost:8081/public/index.php/api/authenticate', {
+          axios.post('{{url("api/authenticate")}}', {
             'email': $('[name="email"]').val(),
             'password': $('[name="password"]').val()
           })

@@ -40,7 +40,7 @@
           }
         },
         mounted: function() {
-          axios.get('http://localhost:8081/public/index.php/api/sites?token='+Cookies.get('orsatmax_token'))
+          axios.get('{{url("api/sites")}}?token='+Cookies.get('orsatmax_token'))
           .then(response => (this.options = response.data.sites))
           .catch(error => console.log(error));
         },
@@ -63,7 +63,7 @@
           }
         },
         mounted: function() {
-          axios.get('http://localhost:8081/public/index.php/api/airs?token='+Cookies.get('orsatmax_token'))
+          axios.get('{{url("api/airs")}}?token='+Cookies.get('orsatmax_token'))
           .then(response => (this.options = response.data.airs))
           .catch(error => console.log(error));
         },
