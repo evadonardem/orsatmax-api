@@ -48,6 +48,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function($api) {
 
   // airs list end-point
   $api->get('/airs', 'App\Api\V1\Controllers\AirController@index');
+  $api->post('/airs', 'App\Api\V1\Controllers\AirController@store');
 
   // sites list end-point
   $api->get('/sites', 'App\Api\V1\Controllers\SiteController@index');

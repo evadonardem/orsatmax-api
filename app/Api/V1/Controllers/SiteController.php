@@ -28,7 +28,8 @@ class SiteController extends Controller
     {
       return $this->response->collection(
         Site::orderBy('instrument_name', 'asc')->get(),
-        new SiteTransformer
+        new SiteTransformer,
+        [ 'key' => 'sites' ]
       );
     }
 
